@@ -1,21 +1,36 @@
 services:
   postgres:
     image: postgres:17
-
     container_name: postgres_db
-
     restart: unless-stopped
-
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: mydb
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  spark-jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: spark_jupyter
+    restart: unless-stopped
+    environment:
+      RUNNING_IN_DOCKER: "true"
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+      - ./utils:/home/jovyan/utils
+      - ./data:/home/jovyan/data
+      - ./src:/home/jovyan/src
+      - ivy_cache:/home/jovyan/.ivy2
+    depends_on:
+      - postgres
+    command: start-notebook.sh --NotebookApp.token=''
+
 volumes:
   postgres_data:
+  ivy_cache:
