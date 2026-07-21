@@ -8,6 +8,7 @@ def get_spark_session(app_name: str = "ecommerce-behavior-analysis") -> SparkSes
         .config("spark.jars.packages", "org.postgresql:postgresql:42.7.7")
         .master("local[*]")
         .config("spark.driver.memory", "4g")
+        .config("spark.sql.shuffle.partitions", "16")
         .getOrCreate()
     )
 
